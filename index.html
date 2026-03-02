@@ -12,9 +12,9 @@
       --bg: #010102; --purple: #a855f7; --purple-glow: rgba(168, 85, 247, 0.9);
       --border: rgba(168, 85, 247, 0.4); --gold: #ffd700; --green: #2ecc71; 
       --red: #ff4d4d; --blue: #3498db; --cyan: #00ffff; --yellow: #f1c40f;
-      --oc-color: #ff00ff; --sa-color: #00ff88; 
-      --as-color: #ff8c00; /* Updated AS Color to Dark Orange */
-      --grey: #888;
+      --oc-color: #ff00ff; /* Neon Pink for OC */
+      --as-color: #6366f1; /* Purple-Indigo for AS */
+      --sa-color: #00ff88; --grey: #888;
       --mk-color: #a855f7; --mb-color: #ff7f50; --ct-color: #3498db; --tp-color: #ff00aa;
     }
 
@@ -24,7 +24,7 @@
     .sweep-bg { position: fixed; inset: 0; z-index: -4; background: linear-gradient(110deg, transparent 40%, rgba(168, 85, 247, 0.15) 50%, transparent 60%); background-size: 250% 100%; animation: shineSweep 8s infinite linear; pointer-events: none; }
     @keyframes shineSweep { 0% { background-position: 250% 0; } 100% { background-position: -250% 0; } }
 
-    /* --- HEADER & GLOWING TITLE --- */
+    /* --- HEADER --- */
     header { display: flex; flex-direction: column; align-items: center; width: 100%; padding-top: 20px; }
     .title-sword { width: 55px; margin-bottom: 10px; animation: swordPulse 2s infinite ease-in-out; filter: drop-shadow(0 0 8px var(--purple)); }
     .main-title { font-family: 'MultiCraftFont'; font-size: 3.2rem; color: #fff; text-shadow: 0 0 10px var(--purple), 0 0 20px var(--purple), 0 0 30px var(--purple-glow); margin: 0; letter-spacing: 2px; }
@@ -55,13 +55,12 @@
     /* --- KIT BUTTONS --- */
     .kit-btn { background: #000; border: 1px solid var(--border); padding: 8px 16px; border-radius: 8px; color: #666; cursor: pointer; font-family: 'MultiCraftFont'; font-size: 0.65rem; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
     .kit-btn img { width: 18px; height: 18px; object-fit: contain; }
-    .kit-btn.diamond img { width: 22px; height: 22px; } 
-    @keyframes pulseKit { 0%, 100% { box-shadow: 0 0 5px var(--glow); transform: scale(1); } 50% { box-shadow: 0 0 18px var(--glow); transform: scale(1.05); } }
     .kit-btn.active.emerald { --glow: var(--green); color: var(--green)!important; border-color: var(--green); animation: pulseKit 2s infinite; }
     .kit-btn.active.dragonhide { --glow: var(--red); color: var(--red)!important; border-color: var(--red); animation: pulseKit 2s infinite; }
     .kit-btn.active.wand { --glow: var(--blue); color: var(--blue)!important; border-color: var(--blue); animation: pulseKit 2s infinite; }
     .kit-btn.active.diamond { --glow: var(--cyan); color: var(--cyan)!important; border-color: var(--cyan); animation: pulseKit 2s infinite; }
     .kit-btn.active.overall { --glow: var(--purple); color: #fff!important; border-color: var(--purple); animation: pulseKit 2s infinite; }
+    @keyframes pulseKit { 0%, 100% { box-shadow: 0 0 5px var(--glow); transform: scale(1); } 50% { box-shadow: 0 0 18px var(--glow); transform: scale(1.05); } }
 
     /* --- TIER DISPLAY --- */
     .tier-container { display: flex; gap: 20px; justify-content: center; width: 95%; flex-wrap: wrap; margin-top: 20px; }
@@ -106,7 +105,7 @@
   <div class="modal-content" onclick="event.stopPropagation()">
     <h3 style="font-family:'MultiCraftFont'; color:var(--purple); margin-bottom:10px;">TIER INFORMATION</h3>
     <p style="font-size:0.7rem; color:#888; line-height: 1.6;">SERVER CODE: <span style="color:var(--red)">UNRELEASED</span><br>DISCORD: <span style="color:var(--red)">UNRELEASED</span></p>
-    <div style="text-align: left; font-size: 0.85rem; margin-top:15px; border-top: 1px solid #222; padding-top:10px;">
+    <div style="text-align: left; font-size: 0.85rem; margin-top:15px; border-top: 1px solid #444; padding-top:10px;">
       <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span>HT1 / LT1</span><span style="color:var(--gold)">50/40 PTS</span></div>
       <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span>HT2 / LT2</span><span style="color:var(--gold)">30/20 PTS</span></div>
       <div style="display:flex; justify-content:space-between;"><span>HT3 / LT3</span><span style="color:var(--gold)">12/8 PTS</span></div>
@@ -135,9 +134,7 @@ function getTags(name) {
   return `
     <div class="tag-row" style="margin-top:5px;">
       <span class="tag reg-${p.region.toLowerCase()}">${p.region}</span>
-      <span class="tag tag-device dev-${p.device.toLowerCase()}">
-        <span class="short-text">${p.device}</span>
-      </span>
+      <span class="tag dev-${p.device.toLowerCase()}">${p.device}</span>
     </div>`;
 }
 
@@ -187,6 +184,7 @@ function render(kit) {
     });
   } else {
     const container = document.createElement('div'); container.className = "tier-container";
+    // Supporting all 5 Tier levels (T1 - T5)
     ["T1", "T2", "T3", "T4", "T5"].forEach(lvl => {
       let colHtml = `<div class="tier-column"><div class="tier-header">${lvl}</div>`;
       let found = false;
