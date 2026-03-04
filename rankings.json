@@ -35,8 +35,7 @@
     "HT1": ["Game1K"],
     "LT1": ["system1117", "DivyamGamerYT"],
     "HT2": ["sample", "skibidi1234", "ItzNoob_"],
-    "RHT2": ["TimmyLoal"],
-    "RHT2": ["LifoMC"],
+    "RHT2": ["TimmyLoal", "LifoMC"],
     "LT2": ["ChillPotato", "big-nub"],
     "HT3": ["V4n1shed", "Possessed_YT", "Lxderr"],
     "LT3": ["revan"],
@@ -47,8 +46,6 @@
   "Emerald OA": {},
   "Dragonhide KB OA": {},
   "Wand": {},
-  "Emerald KB": {}
-}
-  "Diamond": {
-  }
+  "Emerald KB": {},
+  "Diamond": {}
 }
