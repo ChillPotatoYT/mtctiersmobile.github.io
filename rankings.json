@@ -21,7 +21,11 @@
     { "name": "NetworkHero", "region": "EU", "device": "MK" },
     { "name": "LifoMC", "region": "AF", "device": "MK" },
     { "name": "AntonioZga9", "region": "NA", "device": "MB" },
-    { "name": "-_Hades_-", "region": "NA", "device": "CT" }
+    { "name": "-_Hades_-", "region": "NA", "device": "CT" },
+    { "name": "MGK", "region": "AS", "device": "MB" }
+    { "name": "ArpanYT", "region": "AS", "device": "MB" }
+    { "name": "MatrixOP980", "region": "AS", "device": "MB" }
+    { "name": "unseen-faceless", "region": "AS", "device": "MB" }
   ],
 
   "Emerald": {
@@ -34,6 +38,7 @@
     "LT3": ["TQMEN"],
     "HT4": ["FarXD"],
     "LT4": ["Lxderr"],
+    "HT5": ["ArpanYT", "MatrixOP980"],
     "LT5": ["MGK"]
   },
 
@@ -44,10 +49,10 @@
     "RHT2": ["TimmyLoal", "LifoMC"],
     "LT2": ["ChillPotato", "big-nub", "NotMythxc4l"],
     "HT3": ["V4n1shed", "Possessed_YT", "Lxderr", "-_Hades_-"],
-    "LT3": ["revan", "TQMEN"],
-    "HT4": ["Kirby", "NetworkHero", "drago"],
+    "LT3": ["revan", "TQMEN", "unseen-faceless"],
+    "HT4": ["Kirby", "NetworkHero", "drago", "MatrixOP980"],
     "HT5": ["FarXD", "AntonioZga9"],
-    "LT5": ["MGK"]
+    "LT5": ["MGK", "ArpanYT"]
   },
 
   "Emerald OA": {},
