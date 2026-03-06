@@ -28,7 +28,8 @@
     { "name": "unseen-faceless", "region": "AS", "device": "MB" },
     { "name": "SaintOfZytrox", "region": "AS", "device": "MB" },
     { "name": "f0rg1v3n", "region": "AS", "device": "MK" },
-    { "name": "Afdemonking", "region": "EU", "device": "MB" }
+    { "name": "Afdemonking", "region": "EU", "device": "MB" },
+    { "name": "Cosmix_", "region": "EU", "device": "MK" }
   ],
 
   "Emerald": {
@@ -36,7 +37,7 @@
     "LT1": ["sample"],
     "HT2": ["system1117"],
     "RHT2": ["TimmyLoal"],
-    "LT2": ["Possessed_YT", "V4n1shed", "NotMythxc4l", "ChillPotato"],
+    "LT2": ["Possessed_YT", "V4n1shed", "NotMythxc4l", "ChillPotato", "Cosmix_"],
     "HT3": ["revan"],
     "LT3": ["TQMEN"],
     "HT4": ["FarXD"],
