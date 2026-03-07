@@ -29,6 +29,8 @@
     { "name": "SaintOfZytrox", "region": "AS", "device": "MB" },
     { "name": "f0rg1v3n", "region": "AS", "device": "MK" },
     { "name": "Afdemonking", "region": "EU", "device": "MB" },
+    { "name": "oncethebestpvp", "region": "NA", "device": "MB" },
+    { "name": "supermobilenoobpvp", "region": "EU", "device": "MB" },
     { "name": "Cosmix_", "region": "EU", "device": "MK" }
   ],
 
@@ -55,6 +57,7 @@
     "HT3": ["V4n1shed", "Possessed_YT", "Lxderr", "-_Hades_-", "f0rg1v3n"],
     "LT3": ["revan", "TQMEN", "unseen-faceless"],
     "HT4": ["Kirby", "NetworkHero", "drago", "MatrixOP980", "SaintOfZytrox"],
+    "LT4": ["supermobilenoobpvp", "oncethebestpvp"],
     "HT5": ["FarXD", "AntonioZga9"],
     "LT5": ["MGK", "ArpanYT"]
   },
