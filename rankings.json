@@ -9,7 +9,6 @@
     { "name": "TimmyLoal", "region": "OC", "device": "MK" },
     { "name": "skibidi1234", "region": "AS", "device": "MK" },
     { "name": "DivyamGamerYT", "region": "AS", "device": "MK" },
-    { "name": "TQMEN", "region": "AS", "device": "MB" },
     { "name": "revan", "region": "NA", "device": "TP" },
     { "name": "ItzNoob_", "region": "AS", "device": "MK" },
     { "name": "big-nub", "region": "EU", "device": "MK" },
@@ -39,7 +38,8 @@
     { "name": "StrawberryButter", "region": "AF", "device": "MK" },
     { "name": "CJSHORT", "region": "EU", "device": "MK" },
     { "name": "Husky_Multicraft", "region": "NA", "device": "MK" },
-    { "name": "quickhertz", "region": "NA", "device": "MK" }
+    { "name": "quickhertz", "region": "NA", "device": "MK" },
+    { "name": "ChillPotato", "region": "AS", "device": "MK" }
   ],
 
   "Emerald": {
