@@ -1,4 +1,4 @@
-/* FORCE FONT ON EVERYTHING - Using your Assets folder */
+/* 1. FONT FIX - Added fallback and forced pathing */
 @font-face {
     font-family: 'MultiCraftFont';
     src: url('assets/MultiCraftFont.tff') format('truetype');
@@ -8,84 +8,99 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'MultiCraftFont', sans-serif !important;
+    font-family: 'MultiCraftFont', 'Courier New', monospace !important;
 }
 
 :root {
     --purple: #8b5cf6;
     --gold: #ffd700;
-    --bg: #0a0a0a;
-    --card-bg: #0d0d0d;
+    --bg: #050505;
 }
 
 body {
     background-color: var(--bg);
     color: #fff;
     padding: 20px;
+    overflow-x: hidden;
 }
 
-/* Fix for Huge Boxes: Use a proper grid for the tiers */
+/* 2. LAYOUT FIX - This stops the "huge box" issue */
+#displayList {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
 .tier-column {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    width: 100%;
-    max-width: 320px; /* Limits box width so they aren't huge */
-    min-width: 250px;
+    gap: 12px;
+    flex: 1;
+    min-width: 280px;
+    max-width: 350px; /* Limits width of columns */
 }
 
 .tier-card {
-    background: var(--card-bg);
-    border: 1px solid #222;
+    background: #0a0a0a;
+    border: 1px solid #1a1a1a;
     padding: 15px;
     border-radius: 8px;
     text-align: center;
     transition: 0.2s;
-    position: relative;
-    width: 100%;
 }
 
 .tier-card.clickable:hover {
     border-color: var(--purple);
-    box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
     cursor: pointer;
 }
 
-/* Fix Image 1: Hover on Regions/Devices */
+/* 3. HOVER FIX - Regions & Devices */
 .tag {
     position: relative !important;
     display: inline-block;
     cursor: help !important;
-    pointer-events: auto !important; /* Forces hover to work */
-    padding: 2px 6px;
+    pointer-events: auto !important;
+    padding: 2px 8px;
     border-radius: 4px;
     font-size: 0.7rem;
-    margin: 5px 2px;
+    margin: 4px;
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
 .tag:hover::after {
     content: attr(data-title);
     position: absolute;
-    bottom: 130%;
+    bottom: 140%;
     left: 50%;
     transform: translateX(-50%);
     background: #000;
     color: var(--gold);
-    padding: 5px 10px;
+    padding: 6px 10px;
     border: 1px solid var(--gold);
-    border-radius: 4px;
+    font-size: 0.75rem;
     white-space: nowrap;
+    z-index: 10000;
+}
+
+/* 4. PROFILE MODAL - Fixes Image 2 issues */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center;
     z-index: 9999;
 }
 
-/* Fix Image 2: Kit Hover & Profile Sizing */
 .modal-content {
-    max-width: 550px !important; /* Larger modal from your screenshot */
-    width: 95%;
-    background: rgba(5, 5, 5, 0.98);
+    background: #080808;
     border: 2px solid var(--purple);
+    width: 90%;
+    max-width: 500px;
     padding: 40px;
     text-align: center;
+    border-radius: 12px;
 }
 
 .p-kit-item {
@@ -93,8 +108,8 @@ body {
     display: inline-flex;
     flex-direction: column;
     align-items: center;
-    width: 110px;
-    margin: 10px;
+    width: 100px;
+    margin: 15px;
 }
 
 .p-kit-circle {
@@ -105,29 +120,31 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
 }
 
-/* The Popup that replaces the static text in Image 2 */
+/* This is the invisible label that only shows on hover */
 .kit-popup {
     position: absolute;
     bottom: 110%;
-    left: 50%;
-    transform: translateX(-50%) translateY(5px);
     background: #000;
     border: 1px solid var(--gold);
-    padding: 8px 12px;
+    padding: 5px 10px;
     border-radius: 4px;
+    font-size: 0.7rem;
     opacity: 0;
     visibility: hidden;
     transition: 0.1s;
-    z-index: 100;
+    white-space: nowrap;
 }
 
 .p-kit-item:hover .kit-popup {
     opacity: 1;
     visibility: visible;
-    transform: translateX(-50%) translateY(0);
 }
 
-.empty-msg { color: #555 !important; text-align: center; margin-top: 50px; }
+/* Nav & Search */
+.nav-link { cursor: pointer; color: #555; transition: 0.3s; padding: 10px; }
+.nav-link.active { color: var(--gold); text-shadow: 0 0 10px var(--gold); }
+.kit-btn { background: #111; border: 1px solid #222; color: #666; padding: 8px 15px; cursor: pointer; }
+.kit-btn.active { border-color: var(--purple); color: #fff; }
