@@ -118,18 +118,18 @@ async function load() {
 }
 
 function getTags(name) {
-    const p = DATA.Players?.find(x => x.name === name) || { region: "NA", device: "MK" };
-    const reg = REG_MAP[p.region] || { name: p.region, color: "#888" };
-    const dev = DEV_MAP[p.device] || { name: p.device, color: "#888" };
+    const p = DATA.Players?.find(x => x.name === name) || {region:"?", device:"?"};
+    const regLabel = REG_MAP[p.region] || p.region;
+    const devLabel = DEV_MAP[p.device] || p.device;
     
-    return `<div style="margin-top:5px; display:flex; justify-content:center; gap:8px;">
-        <div class="tag-wrap" style="--tag-color: ${reg.color}">
-            <span class="tag">${p.region}</span>
-            <div class="tag-popup">${reg.name}</div>
+    return `<div style="margin-top:5px; display:flex; justify-content:center; gap:5px;">
+        <div class="tag-wrap">
+            <span class="tag reg-${p.region.toLowerCase()}">${p.region}</span>
+            <div class="tag-popup">${regLabel}</div>
         </div>
-        <div class="tag-wrap" style="--tag-color: ${dev.color}">
-            <span class="tag">${p.device}</span>
-            <div class="tag-popup">${dev.name}</div>
+        <div class="tag-wrap">
+            <span class="tag dev-${p.device.toLowerCase()}">${p.device}</span>
+            <div class="tag-popup">${devLabel}</div>
         </div>
     </div>`;
 }
@@ -175,8 +175,13 @@ function openProfile(name) {
                     const color = isR ? 'var(--grey)' : 'var(--gold)';
                     const display = isR ? 'Retired ' + t.substring(1) : t;
                     grid += `<div class="p-kit-item">
-                        <div class="kit-popup" style="border-color:${color}"><span style="color:${color}">${display}</span><br><span style="color:#666">${k}</span></div>
-                        <div class="p-kit-circle" style="border-color:${color}">${KIT_MAP[k]?`<img src="${ASSETS}${KIT_MAP[k]}">`:''}</div>
+                        <div class="kit-popup" style="border-color:${color}">
+                            <span style="color:${color}">${display}</span><br>
+                            <span style="color:#666">${k}</span>
+                        </div>
+                        <div class="p-kit-circle" style="border-color:${color}">
+                            ${KIT_MAP[k]?`<img src="${ASSETS}${KIT_MAP[k]}">`:''}
+                        </div>
                         <div style="font-size:0.6rem; color:${color}; font-weight:bold; margin-top:5px;">${display}</div>
                     </div>`;
                 }
