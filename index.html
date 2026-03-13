@@ -100,9 +100,18 @@ let CURRENT_KIT = 'Overall';
 
 function getTags(name) {
     const p = DATA.Players?.find(x => x.name === name) || {region:"?", device:"?"};
-    return `<div style="margin-top:5px;">
-        <div class="tag-wrap"><span class="tag reg-${p.region.toLowerCase()}">${p.region}</span></div>
-        <div class="tag-wrap"><span class="tag dev-${p.device.toLowerCase()}">${p.device}</span></div>
+    const regFull = REG_MAP[p.region] || p.region;
+    const devFull = DEV_MAP[p.device] || p.device;
+
+    return `<div style="margin-top:10px; display:flex; gap:5px;">
+        <div class="tag-wrap">
+            <span class="tag reg-${p.region.toLowerCase()}">${p.region}</span>
+            <div class="tag-popup">${regFull}</div>
+        </div>
+        <div class="tag-wrap">
+            <span class="tag dev-${p.device.toLowerCase()}">${p.device}</span>
+            <div class="tag-popup">${devFull}</div>
+        </div>
     </div>`;
 }
 
@@ -186,15 +195,28 @@ function openProfile(name) {
     document.getElementById('pName').innerText = name;
     document.getElementById('pMeta').innerHTML = getTags(name);
     document.getElementById('pPoints').innerText = DATA.Overall[name] + " PTS";
+    
     let grid = "";
-    for(let k in DATA) if(k!=="Overall" && k!=="Players") for(let t in DATA[k]) if(DATA[k][t].includes(name)) {
-        const isR = t.startsWith('R');
-        const color = isR ? 'var(--grey)' : 'var(--gold)';
-        const display = isR ? 'Retired ' + t.substring(1) : t;
-        grid += `<div class="p-kit-item">
-            <div class="p-kit-circle" style="border-color:${color}">${KIT_MAP[k]?`<img src="${ASSETS}${KIT_MAP[k]}">`:''}</div>
-            <div style="font-size:0.6rem; color:${color}; font-weight:bold; margin-top:5px;">${display}</div>
-        </div>`;
+    for(let k in DATA) {
+        if(k!=="Overall" && k!=="Players") {
+            for(let t in DATA[k]) {
+                if(DATA[k][t].includes(name)) {
+                    const isR = t.startsWith('R');
+                    const color = isR ? 'var(--grey)' : 'var(--gold)';
+                    const display = isR ? 'Retired ' + t.substring(1) : t;
+                    grid += `<div class="p-kit-item">
+                        <div class="kit-popup">
+                            <b style="color:${color}">${display}</b><br>
+                            <span style="color:#888; font-size:0.5rem;">${k.toUpperCase()}</span>
+                        </div>
+                        <div class="p-kit-circle" style="border-color:${color}">
+                            ${KIT_MAP[k]?`<img src="${ASSETS}${KIT_MAP[k]}">`:''}
+                        </div>
+                        <div style="font-size:0.6rem; color:${color}; font-weight:bold; margin-top:5px;">${display}</div>
+                    </div>`;
+                }
+            }
+        }
     }
     document.getElementById('pTiers').innerHTML = grid;
     document.getElementById('profileModal').style.display = 'flex';
