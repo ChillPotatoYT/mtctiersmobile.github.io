@@ -15,10 +15,7 @@
 </head>
 <body>
 <div class="sweep-bg"></div>
-<header>
-    <img src="https://raw.githubusercontent.com/mtctiers/mtctiers.github.io/refs/heads/main/assets/backgroundsword.png" class="title-sword" alt="Logo">
-    <h1 class="main-title">MTC TIERS</h1>
-</header>
+<header><img src="https://raw.githubusercontent.com/mtctiers/mtctiers.github.io/refs/heads/main/assets/backgroundsword.png" class="title-sword" alt="Logo"><h1 class="main-title">MTC TIERS</h1></header>
 
 <nav>
     <div class="nav-center">
@@ -72,30 +69,17 @@ const ASSETS = "https://raw.githubusercontent.com/mtctiers/mtctiers.github.io/re
 const DATA_PATH = "https://raw.githubusercontent.com/mtctiers/mtctiers.github.io/refs/heads/main/data/";
 
 const KIT_MAP = { 
-    "Overall": "", 
-    "Emerald": "emerald.png", 
-    "Emerald KB": "emerald_kb.png", 
-    "Emerald OA": "emerald_oa.png", 
-    "Dragonhide KB": "dragonhide_kb.png", 
-    "Dragonhide KB OA": "kb_oa.png", 
-    "Wand": "wand.png", 
-    "Diamond": "diamond.png" 
+    "Overall": "", "Emerald": "emerald.png", "Emerald KB": "emerald_kb.png", "Emerald OA": "emerald_oa.png", 
+    "Dragonhide KB": "dragonhide_kb.png", "Dragonhide KB OA": "kb_oa.png", "Wand": "wand.png", "Diamond": "diamond.png" 
 };
 
-const REG_MAP = {
-    "NA": "North America", "EU": "Europe", "SA": "South America", 
-    "OC": "Oceania", "AS": "Asia", "AF": "Africa" 
-};
-
-const DEV_MAP = {
-    "MK": "Mouse & Keyboard", "MB": "Mobile", "CT": "Controller", "TP": "Touchpad" 
-};
+const REG_MAP = { "NA": "North America", "EU": "Europe", "SA": "South America", "OC": "Oceania", "AS": "Asia", "AF": "Africa" };
+const DEV_MAP = { "MK": "Mouse & Keyboard", "MB": "Mobile", "CT": "Controller", "TP": "Touchpad" };
 
 let DATA = {};
 let CURRENT_TAB = 'rankings';
 let CURRENT_KIT = 'Overall';
 
-// FIXED: Now includes .tag-popup for hovering
 function getTags(name) {
     const p = DATA.Players?.find(x => x.name === name) || {region:"?", device:"?"};
     const regFull = REG_MAP[p.region] || p.region;
@@ -185,7 +169,6 @@ async function switchTab(tab) {
     }
 }
 
-// FIXED: Now includes .kit-popup for icon hovering
 function openProfile(name) {
     if(!DATA.Overall?.[name]) return;
     const sorted = Object.entries(DATA.Overall).sort((a,b)=>b[1]-a[1]);
@@ -194,28 +177,15 @@ function openProfile(name) {
     document.getElementById('pName').innerText = name;
     document.getElementById('pMeta').innerHTML = getTags(name);
     document.getElementById('pPoints').innerText = DATA.Overall[name] + " PTS";
-    
     let grid = "";
-    for(let k in DATA) {
-        if(k!=="Overall" && k!=="Players") {
-            for(let t in DATA[k]) {
-                if(DATA[k][t].includes(name)) {
-                    const isR = t.startsWith('R');
-                    const color = isR ? 'var(--grey)' : 'var(--gold)';
-                    const display = isR ? 'Retired ' + t.substring(1) : t;
-                    grid += `<div class="p-kit-item">
-                        <div class="kit-popup">
-                            <b style="color:${color}">${display}</b><br>
-                            <span style="color:#888; font-size:0.5rem;">${k.toUpperCase()}</span>
-                        </div>
-                        <div class="p-kit-circle" style="border-color:${color}">
-                            ${KIT_MAP[k]?`<img src="${ASSETS}${KIT_MAP[k]}">`:''}
-                        </div>
-                        <div style="font-size:0.6rem; color:${color}; font-weight:bold; margin-top:5px;">${display}</div>
-                    </div>`;
-                }
-            }
-        }
+    for(let k in DATA) if(k!=="Overall" && k!=="Players") for(let t in DATA[k]) if(DATA[k][t].includes(name)) {
+        const isR = t.startsWith('R');
+        const color = isR ? 'var(--grey)' : 'var(--gold)';
+        const display = isR ? 'Retired ' + t.substring(1) : t;
+        grid += `<div class="p-kit-item">
+            <div class="p-kit-circle" style="border-color:${color}">${KIT_MAP[k]?`<img src="${ASSETS}${KIT_MAP[k]}">`:''}</div>
+            <div style="font-size:0.6rem; color:${color}; font-weight:bold; margin-top:5px;">${display}</div>
+        </div>`;
     }
     document.getElementById('pTiers').innerHTML = grid;
     document.getElementById('profileModal').style.display = 'flex';
