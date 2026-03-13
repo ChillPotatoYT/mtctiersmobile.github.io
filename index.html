@@ -4,39 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MTC TIERS</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mtctiers/mtctiers.github.io@main/css.css?v=160">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mtctiers/mtctiers.github.io@main/css.css?v=180">
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/mtctiers/mtctiers.github.io/refs/heads/main/assets/backgroundsword.png">
 
     <style>
-        /* --- LOCAL FONT LOADING --- */
         @font-face {
             font-family: 'MultiCraftFont';
             src: url('MultiCraftFont.tff') format('truetype');
         }
 
-        body, button, input, div, span {
-            font-family: 'MultiCraftFont', sans-serif;
+        body, button, input, div, span, h1, h2, b {
+            font-family: 'MultiCraftFont', sans-serif !important;
         }
 
-        /* --- MODAL BOX REFINEMENT --- */
         .modal-content { 
             max-width: 350px !important; 
             padding: 15px !important; 
             border: 2px solid var(--purple) !important; 
-            overflow: hidden !important;
             background: rgba(0,0,0,0.95) !important;
         }
         
-        /* --- TRANSPARENT KIT CIRCLES --- */
         .p-kit-circle { 
             width: 50px; height: 50px; border: 2px solid var(--gold); border-radius: 50%; 
             display: flex; align-items: center; justify-content: center; 
             background: transparent !important; margin-bottom: 5px; 
         }
-        .p-kit-circle img { width: 30px; height: 30px; }
 
-        /* --- HOVER POPUP (MULTICRAFT FONT) --- */
         .p-kit-item { position: relative; display: inline-flex; flex-direction: column; align-items: center; width: 70px; margin-top: 15px; }
+        
         .kit-popup {
             position: absolute; bottom: 115%; left: 50%; transform: translateX(-50%) translateY(5px);
             background: #000; border: 1px solid var(--gold); padding: 6px 10px; border-radius: 4px;
@@ -44,21 +39,17 @@
             box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); z-index: 1000; white-space: nowrap;
         }
         .p-kit-item:hover .kit-popup { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
-        
-        .popup-kit-name { color: #888; font-size: 0.6rem; display: block; margin-bottom: 2px; }
+        .popup-kit-name { color: #888; font-size: 0.6rem; display: block; }
         .popup-tier-name { color: var(--gold); font-size: 0.85rem; font-weight: bold; display: block; }
 
-        /* --- TAG HOVER --- */
-        .tag { position: relative; cursor: help; }
         .tag:hover::after {
             content: attr(data-title); position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%);
             background: #000; color: #fff; padding: 4px 8px; font-size: 0.6rem; border: 1px solid var(--gold);
             border-radius: 4px; white-space: nowrap; z-index: 1001;
         }
 
-        .hof-desc { color: #aaa; font-size: 0.8rem; margin-top: 5px; line-height: 1.2; }
         .tester-discord { color: #7289da; font-size: 0.85rem; margin-top: 4px; }
-        .empty-msg { color: var(--gold); font-size: 1.2rem; margin-top: 50px; text-align: center; width: 100%; }
+        .empty-msg { color: var(--gold); font-size: 1.4rem; margin-top: 60px; text-align: center; width: 100%; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -92,7 +83,7 @@
 </div>
 
 <script>
-const DATA_PATH = "https://raw.githubusercontent.com/mtctiers/mtctiers.github.io/refs/heads/main/data/";
+const DATA_PATH = "data/";
 const ASSETS = "https://raw.githubusercontent.com/mtctiers/mtctiers.github.io/refs/heads/main/assets/";
 const KIT_MAP = { "Overall": "", "Emerald": "emerald.png", "Emerald KB": "emerald_kb.png", "Emerald OA": "emerald_oa.png", "Dragonhide KB": "dragonhide_kb.png", "Dragonhide KB OA": "kb_oa.png", "Wand": "wand.png", "Diamond": "diamond.png" };
 const REGIONS = { "NA": "North America", "EU": "Europe", "RS": "Russia", "OC": "Oceania", "AF": "Africa", "SA": "South America" };
@@ -102,28 +93,31 @@ let DATA = { Rankings: {}, HOF: [], Testers: [], Players: [], Overall: {} };
 
 async function load() {
     try {
+        const fetchJson = (n) => fetch(`${DATA_PATH}${n}.json?v=${Date.now()}`).then(r => r.json());
         const [r, p, h, t] = await Promise.all([
-            fetch(`${DATA_PATH}rankings.json?v=${Date.now()}`).then(res => res.json()),
-            fetch(`${DATA_PATH}players.json?v=${Date.now()}`).then(res => res.json()).catch(() => []),
-            fetch(`${DATA_PATH}hof.json?v=${Date.now()}`).then(res => res.json()).catch(() => []),
-            fetch(`${DATA_PATH}testers.json?v=${Date.now()}`).then(res => res.json()).catch(() => [])
+            fetchJson('rankings'), fetchJson('players').catch(()=>[]),
+            fetchJson('hof').catch(()=>[]), fetchJson('testers').catch(()=>[])
         ]);
-        DATA.Rankings = r; DATA.Players = p; DATA.HOF = h; DATA.Testers = t;
+        
+        // Correcting for the "Rankings" top-level key in your JSON
+        DATA.Rankings = r.Rankings || r; 
+        DATA.Players = p; DATA.HOF = h; DATA.Testers = t;
+        
         calculateOverall();
         buildKitBar();
         render("Overall");
-    } catch(e) { 
-        console.error("Load failed:", e);
-    }
+    } catch(e) { console.error("Data Load Error:", e); }
 }
 
 function calculateOverall() {
     let totals = {};
     const PTS = { "HT1":50, "LT1":40, "HT2":30, "LT2":20, "HT3":12, "LT3":8, "HT4":5, "LT4":3, "HT5":2, "LT5":1 };
     for(let k in DATA.Rankings) {
+        if(k === "Overall") continue; 
         for(let t in DATA.Rankings[k]) {
             DATA.Rankings[k][t].forEach(name => {
-                totals[name] = (totals[name]||0) + (PTS[t.replace('R','')]||0);
+                const tier = t.replace('R','');
+                totals[name] = (totals[name]||0) + (PTS[tier]||0);
             });
         }
     }
@@ -149,26 +143,27 @@ function render(kit) {
         sorted.forEach(([name, pts], i) => {
             out.innerHTML += `<div class="tier-card clickable" onclick="openProfile('${name}')">
                 <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-                    <div><b style="color:var(--purple); font-size:0.7rem;">#${i+1}</b> <span style="font-weight:bold;">${name}</span>${getTags(name)}</div>
+                    <div><b style="color:var(--purple); font-size:0.7rem;">#${i+1}</b> <span style="font-size:1.1rem;">${name}</span>${getTags(name)}</div>
                     <b style="color:var(--gold);">${pts} PTS</b>
                 </div>
             </div>`;
         });
     } else {
-        if(!DATA.Rankings[kit] || Object.keys(DATA.Rankings[kit]).length === 0) {
+        const kitData = DATA.Rankings[kit];
+        if(!kitData || Object.keys(kitData).length === 0) {
             out.innerHTML = `<div class="empty-msg">NO RANKED PLAYERS</div>`; return;
         }
         const grid = document.createElement('div'); grid.style.display="flex"; grid.style.gap="15px"; grid.style.flexWrap="wrap"; grid.style.justifyContent="center";
         ["T1","T2","T3","T4","T5"].forEach(lvl => {
             let col = `<div style="min-width:180px;"><div class="tier-header">${lvl}</div>`;
             let has = false;
-            for(let t in DATA.Rankings[kit]) {
+            for(let t in kitData) {
                 if(t.includes(lvl)) {
-                    DATA.Rankings[kit][t].forEach(name => {
+                    kitData[t].forEach(name => {
                         has = true;
                         col += `<div class="tier-card clickable" onclick="openProfile('${name}')" style="text-align:center; margin-bottom:10px;">
                             <div style="font-weight:bold;">${name}</div>${getTags(name, true)}
-                            <div style="font-size:0.6rem; color:var(--gold); margin-top:4px;">${t}</div>
+                            <div style="font-size:0.65rem; color:var(--gold); margin-top:4px;">${t}</div>
                         </div>`;
                     });
                 }
@@ -188,6 +183,7 @@ function openProfile(name) {
     document.getElementById('pPoints').innerText = DATA.Overall[name] + " PTS";
     let grid = "";
     for(let k in DATA.Rankings) {
+        if(k === "Overall") continue;
         for(let t in DATA.Rankings[k]) {
             if(DATA.Rankings[k][t].includes(name)) {
                 const ct = t.startsWith('R') ? t.substring(1) : t;
@@ -213,9 +209,9 @@ function switchTab(tab) {
     if(tab === 'rankings') render("Overall");
     else if(tab === 'hof') {
         DATA.HOF.forEach(p => {
-            const canClick = DATA.Overall[p.name];
-            out.innerHTML += `<div class="tier-card ${canClick ? 'clickable' : ''}" ${canClick ? `onclick="openProfile('${p.name}')"` : ''}>
-                <div style="font-weight:bold; font-size:1.1rem; color:var(--gold);">${p.name}</div>
+            const hasProfile = DATA.Overall[p.name];
+            out.innerHTML += `<div class="tier-card ${hasProfile ? 'clickable' : ''}" ${hasProfile ? `onclick="openProfile('${p.name}')"` : ''}>
+                <div style="font-size:1.2rem; color:var(--gold);">${p.name}</div>
                 <div class="hof-desc">${p.description}</div>
             </div>`;
         });
@@ -223,7 +219,7 @@ function switchTab(tab) {
         DATA.Testers.forEach(p => {
             out.innerHTML += `<div class="tier-card">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div style="font-weight:bold;">${p.name}</div>
+                    <div style="font-size:1.1rem;">${p.name}</div>
                     <div class="tester-discord">Discord: ${p.discord}</div>
                 </div>
             </div>`;
@@ -249,7 +245,7 @@ function handleSearch(val) {
     const pop = document.getElementById('searchPopup');
     if(!val) { pop.style.display = 'none'; return; }
     const matches = Object.keys(DATA.Overall).filter(n => n.toLowerCase().includes(val.toLowerCase())).slice(0, 5);
-    pop.innerHTML = matches.map(m => `<div class="search-item" onclick="openProfile('${m}'); document.getElementById('searchPopup').style.display='none';"><b>${m}</b></div>`).join('');
+    pop.innerHTML = matches.map(m => `<div class="search-item" onclick="openProfile('${m}'); pop.style.display='none';"><b>${m}</b></div>`).join('');
     pop.style.display = matches.length ? 'block' : 'none';
 }
 
