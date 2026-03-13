@@ -103,7 +103,7 @@ function getTags(name) {
     const regFull = REG_MAP[p.region] || p.region;
     const devFull = DEV_MAP[p.device] || p.device;
 
-    return `<div style="margin-top:12px; display:flex; gap:8px;">
+    return `<div style="margin-top:10px; display:flex; gap:8px;">
         <div class="tag-wrap">
             <span class="tag reg-${p.region.toLowerCase()}">${p.region}</span>
             <div class="tag-popup">${regFull}</div>
@@ -205,7 +205,7 @@ function openProfile(name) {
                     const color = isR ? 'var(--grey)' : 'var(--gold)';
                     const display = isR ? 'Retired ' + t.substring(1) : t;
                     grid += `<div class="p-kit-item">
-                        <div class="kit-popup">${k.toUpperCase()}: ${display}</div>
+                        <div class="kit-popup"><b>${k.toUpperCase()}</b><br>${display}</div>
                         <div class="p-kit-circle" style="border-color:${color}">
                             ${KIT_MAP[k]?`<img src="${ASSETS}${KIT_MAP[k]}">`:''}
                         </div>
