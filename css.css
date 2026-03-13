@@ -26,7 +26,19 @@ body {
     color: #fff;
     min-height: 100vh;
     padding: 40px 20px;
+    overflow-x: hidden;
+}
+
+/* THE SWEEP BACKGROUND */
+.sweep-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: radial-gradient(circle at top, #151025 0%, #050505 70%);
+    z-index: -1; /* Keeps it behind everything */
+    pointer-events: none;
 }
 
 header { text-align: center; margin-bottom: 50px; }
@@ -68,20 +80,20 @@ nav {
 }
 .tier-card.clickable:hover { border-color: var(--purple); cursor: pointer; transform: translateY(-3px); }
 
-/* 5. TAGS (Exact Video Colors) */
+/* 5. TAGS */
 .tag-container { display: flex; justify-content: center; gap: 6px; margin-top: 8px; }
-.tag { font-size: 0.55rem; padding: 2px 8px; border-radius: 4px; color: #fff; text-transform: uppercase; }
+.tag { font-size: 0.55rem; padding: 2px 8px; border-radius: 4px; color: #fff; }
 
-.tag-na { background: #3b82f6; } /* Blue */
-.tag-eu { background: #ef4444; } /* Red */
-.tag-as { background: #f59e0b; } /* Orange */
-.tag-sa { background: #10b981; } /* Green */
-.tag-af { background: #8b5cf6; } /* Purple */
-.tag-oc { background: #ec4899; } /* Pink */
-.tag-ru { background: #64748b; } /* Slate */
+.tag-na { background: #3b82f6; } 
+.tag-eu { background: #ef4444; } 
+.tag-as { background: #f59e0b; } 
+.tag-sa { background: #10b981; } 
+.tag-af { background: #8b5cf6; } 
+.tag-oc { background: #ec4899; } 
+.tag-ru { background: #64748b; } 
 
-.tag-mk { background: #4b5563; } /* Grey */
-.tag-mb { background: #1f2937; } /* Dark */
+.tag-mk { background: #4b5563; } 
+.tag-mb { background: #1f2937; } 
 
 /* 6. MODALS */
 .modal-overlay {
