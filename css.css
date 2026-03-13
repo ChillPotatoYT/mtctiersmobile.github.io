@@ -8,12 +8,11 @@
     --purple: #8b5cf6;
     --gold: #ffd700;
     --bg: #050505;
-    --card-bg: #0a0a0a;
-    --border: #1a1a1a;
+    --card-bg: rgba(15, 15, 15, 0.8);
+    --border: #222;
     --grey: #555;
 }
 
-/* 2. GLOBAL STYLES */
 * {
     margin: 0;
     padding: 0;
@@ -25,8 +24,7 @@ body {
     background-color: var(--bg);
     color: #fff;
     min-height: 100vh;
-    padding: 40px 20px;
-    overflow-x: hidden;
+    padding-bottom: 100px;
 }
 
 /* THE SWEEP BACKGROUND */
@@ -36,76 +34,85 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at top, #151025 0%, #050505 70%);
-    z-index: -1; /* Keeps it behind everything */
-    pointer-events: none;
+    background: radial-gradient(circle at 50% -10%, #1e1635 0%, #050505 75%);
+    z-index: -1;
 }
 
-header { text-align: center; margin-bottom: 50px; }
-.main-title { font-size: 3rem; letter-spacing: 4px; text-shadow: 0 0 25px var(--purple); }
-
-/* 3. NAVIGATION */
-nav {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    margin-bottom: 40px;
-    border-bottom: 1px solid #111;
-    padding-bottom: 20px;
+header { 
+    text-align: center; 
+    padding: 60px 0 20px 0; 
 }
 
-.nav-link { cursor: pointer; color: var(--grey); font-size: 0.8rem; transition: 0.3s; }
+.main-title { 
+    font-size: 3rem; 
+    letter-spacing: 5px; 
+    text-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
+}
+
+/* SEARCH BAR */
+.search-container {
+    position: absolute;
+    top: 65px;
+    right: 40px;
+}
+
+#playerSearch {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid #333;
+    color: #fff;
+    padding: 8px 15px;
+    font-size: 0.6rem;
+    width: 200px;
+    border-radius: 4px;
+    outline: none;
+}
+
+/* NAVIGATION & KIT BAR */
+nav { display: flex; justify-content: center; gap: 30px; margin-bottom: 40px; }
+.nav-link { cursor: pointer; color: var(--grey); font-size: 0.7rem; letter-spacing: 1px; }
 .nav-link.active { color: #fff; text-shadow: 0 0 10px #fff; }
 
-/* 4. KIT BAR & CARDS */
-#kitBar { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 40px; }
+#kitBar { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-bottom: 50px; }
 .kit-btn {
     background: #0a0a0a; border: 1px solid var(--border); color: var(--grey);
-    padding: 10px 15px; cursor: pointer; font-size: 0.65rem; display: flex; align-items: center;
+    padding: 8px 12px; cursor: pointer; font-size: 0.55rem; border-radius: 4px;
 }
-.kit-btn.active { border-color: var(--purple); color: #fff; box-shadow: 0 0 10px rgba(139, 92, 246, 0.3); }
+.kit-btn.active { border-color: var(--purple); color: #fff; }
 
-#displayList { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; max-width: 1400px; margin: 0 auto; }
-
-.tier-column { display: flex; flex-direction: column; gap: 15px; flex: 1; min-width: 280px; max-width: 350px; }
-.tier-label { color: #fff; font-size: 1.1rem; margin-bottom: 10px; text-align: center; }
+/* TIERS GRID */
+#displayList { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; padding: 0 20px; }
+.tier-column { flex: 1; min-width: 280px; max-width: 350px; }
+.tier-label { text-align: center; color: #fff; margin-bottom: 15px; font-size: 1rem; }
 
 .tier-card {
     background: var(--card-bg);
     border: 1px solid var(--border);
     padding: 20px;
-    border-radius: 12px;
+    margin-bottom: 10px;
+    border-radius: 6px;
     text-align: center;
     transition: 0.2s;
 }
-.tier-card.clickable:hover { border-color: var(--purple); cursor: pointer; transform: translateY(-3px); }
+.tier-card.clickable:hover { border-color: var(--purple); cursor: pointer; }
 
-/* 5. TAGS */
-.tag-container { display: flex; justify-content: center; gap: 6px; margin-top: 8px; }
-.tag { font-size: 0.55rem; padding: 2px 8px; border-radius: 4px; color: #fff; }
+/* TAGS */
+.tag-container { display: flex; justify-content: center; gap: 5px; margin: 8px 0; }
+.tag { font-size: 0.5rem; padding: 2px 5px; border-radius: 2px; }
+.tag-na { background: #3b82f6; } .tag-eu { background: #ef4444; } 
+.tag-as { background: #f59e0b; } .tag-sa { background: #10b981; } 
+.tag-mk { background: #4b5563; } .tag-mb { background: #1f2937; }
 
-.tag-na { background: #3b82f6; } 
-.tag-eu { background: #ef4444; } 
-.tag-as { background: #f59e0b; } 
-.tag-sa { background: #10b981; } 
-.tag-af { background: #8b5cf6; } 
-.tag-oc { background: #ec4899; } 
-.tag-ru { background: #64748b; } 
-
-.tag-mk { background: #4b5563; } 
-.tag-mb { background: #1f2937; } 
-
-/* 6. MODALS */
+/* MODAL */
 .modal-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 9999;
+    background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center;
 }
 .modal-content {
-    background: #050505; border: 2px solid var(--purple); width: 90%; max-width: 500px;
-    padding: 40px; border-radius: 20px; text-align: center;
+    background: #080808; border: 1px solid var(--purple); width: 450px;
+    padding: 40px; border-radius: 12px; text-align: center;
 }
-.p-kit-item { display: inline-block; margin: 15px; text-align: center; }
+.p-kit-item { display: inline-block; margin: 10px; text-align: center; width: 90px; }
 .p-kit-circle {
-    width: 75px; height: 75px; border: 2px solid var(--gold); border-radius: 50%;
-    display: flex; align-items: center; justify-content: center; margin-bottom: 10px;
+    width: 65px; height: 65px; border: 2px solid var(--gold); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; margin: 0 auto 8px auto;
 }
