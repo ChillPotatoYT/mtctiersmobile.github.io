@@ -47,43 +47,48 @@ nav {
     color: #fff; padding: 8px; font-family: 'MultiCraftFont'; font-size: 0.65rem; outline: none; 
 }
 
-/* --- THE FIX FOR THE HOVER POPUP --- */
-.tag-wrap { position: relative; display: inline-block; margin: 0 5px; cursor: help; }
+/* --- THE HOVER POPUP ENGINE --- */
+.tag-wrap { 
+    position: relative; 
+    display: inline-block !important; 
+    margin: 0 4px; 
+}
 
 .tag { 
     font-family: 'MultiCraftFont'; font-size: 0.55rem; padding: 3px 7px; 
-    border-radius: 4px; border: 1px solid #444; display: block; 
+    border-radius: 4px; border: 1px solid #444; display: block; cursor: help;
 }
 
 .tag-popup {
     position: absolute;
     bottom: 140%;
     left: 50%;
-    transform: translateX(-50%) translateY(10px);
-    background: #08080c;
-    color: #fff;
+    transform: translateX(-50%) translateY(5px);
+    background: #0a0a0f !important;
+    color: #fff !important;
     padding: 6px 12px;
     font-size: 0.6rem;
     border-radius: 4px;
     border: 1px solid var(--purple);
     white-space: nowrap;
-    box-shadow: 0 0 15px rgba(0,0,0,0.9);
+    box-shadow: 0 0 15px rgba(0,0,0,1);
     
-    /* HIDE BY DEFAULT */
-    opacity: 0;
-    visibility: hidden;
-    transition: 0.2s ease-out;
+    /* START HIDDEN */
+    opacity: 0 !important;
+    visibility: hidden !important;
     pointer-events: none;
-    z-index: 1000;
+    z-index: 9999;
+    transition: 0.2s ease-out;
 }
 
+/* SHOW ON HOVER */
 .tag-wrap:hover .tag-popup {
-    opacity: 1;
-    visibility: visible;
+    opacity: 1 !important;
+    visibility: visible !important;
     transform: translateX(-50%) translateY(0);
 }
 
-/* Color Overrides */
+/* Color Classes */
 .reg-na { color: var(--na-color); border-color: var(--na-color); }
 .reg-eu { color: var(--eu-color); border-color: var(--eu-color); }
 .reg-sa { color: var(--sa-color); border-color: var(--sa-color); }
