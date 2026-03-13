@@ -89,43 +89,51 @@ const KIT_MAP = { "Overall": "", "Emerald": "emerald.png", "Emerald KB": "emeral
 const REGIONS = { "NA": "North America", "EU": "Europe", "AS": "Asia", "OC": "Oceania", "AF": "Africa", "SA": "South America" };
 const DEVICES = { "MK": "Mouse & Keyboard", "TP": "Touchpad", "CT": "Controller", "MB": "Mobile" };
 
-let DATA = { Rankings: {}, HOF: [], Testers: [], Players: [], Overall: {} };
+let DATA = { Kits: {}, HOF: [], Testers: [], Players: [], Overall: {} };
 
 async function load() {
     try {
-        const fetchJson = (n) => fetch(`${DATA_PATH}${n}.json?v=${Date.now()}`).then(r => r.json());
-        const [r, p, h, t] = await Promise.all([
-            fetchJson('rankings'), fetchJson('players').catch(()=>[]),
-            fetchJson('hof').catch(()=>[]), fetchJson('testers').catch(()=>[])
-        ]);
+        // Fetch rankings.json which now contains Players + Kits
+        const r = await fetch(`${DATA_PATH}rankings.json?v=${Date.now()}`).then(res => res.json());
+        const h = await fetch(`${DATA_PATH}hof.json?v=${Date.now()}`).then(res => res.json()).catch(() => []);
+        const t = await fetch(`${DATA_PATH}testers.json?v=${Date.now()}`).then(res => res.json()).catch(() => []);
+
+        DATA.Players = r.Players || [];
+        DATA.HOF = h;
+        DATA.Testers = t;
         
-        // Correcting for the "Rankings" top-level key in your JSON
-        DATA.Rankings = r.Rankings || r; 
-        DATA.Players = p; DATA.HOF = h; DATA.Testers = t;
-        
+        // Separate the Kits from the Players metadata
+        DATA.Kits = { ...r };
+        delete DATA.Kits.Players;
+
         calculateOverall();
         buildKitBar();
         render("Overall");
-    } catch(e) { console.error("Data Load Error:", e); }
+    } catch(e) { 
+        console.error("Load Error:", e); 
+    }
 }
 
 function calculateOverall() {
     let totals = {};
     const PTS = { "HT1":50, "LT1":40, "HT2":30, "LT2":20, "HT3":12, "LT3":8, "HT4":5, "LT4":3, "HT5":2, "LT5":1 };
-    for(let k in DATA.Rankings) {
-        if(k === "Overall") continue; 
-        for(let t in DATA.Rankings[k]) {
-            DATA.Rankings[k][t].forEach(name => {
-                const tier = t.replace('R','');
-                totals[name] = (totals[name]||0) + (PTS[tier]||0);
-            });
+    
+    for(let kit in DATA.Kits) {
+        for(let tier in DATA.Kits[kit]) {
+            // Remove 'R' from Tier names like RHT2
+            const cleanTier = tier.replace('R', '');
+            if(Array.isArray(DATA.Kits[kit][tier])) {
+                DATA.Kits[kit][tier].forEach(name => {
+                    totals[name] = (totals[name] || 0) + (PTS[cleanTier] || 0);
+                });
+            }
         }
     }
     DATA.Overall = totals;
 }
 
 function getTags(name, centered = false) {
-    const p = DATA.Players?.find(x => x.name === name);
+    const p = DATA.Players.find(x => x.name === name);
     if(!p) return "";
     return `<div style="display:flex; gap:6px; ${centered ? 'justify-content:center;' : ''}">
         <span class="tag reg-${p.region.toLowerCase()}" data-title="${REGIONS[p.region]||p.region}">${p.region}</span>
@@ -143,24 +151,28 @@ function render(kit) {
         sorted.forEach(([name, pts], i) => {
             out.innerHTML += `<div class="tier-card clickable" onclick="openProfile('${name}')">
                 <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-                    <div><b style="color:var(--purple); font-size:0.7rem;">#${i+1}</b> <span style="font-size:1.1rem;">${name}</span>${getTags(name)}</div>
+                    <div><b style="color:var(--purple); font-size:0.75rem;">#${i+1}</b> <span style="font-size:1.1rem;">${name}</span>${getTags(name)}</div>
                     <b style="color:var(--gold);">${pts} PTS</b>
                 </div>
             </div>`;
         });
     } else {
-        const kitData = DATA.Rankings[kit];
-        if(!kitData || Object.keys(kitData).length === 0) {
+        const kitData = DATA.Kits[kit];
+        // Check if kit exists or has entries
+        const hasPlayers = kitData && Object.values(kitData).some(arr => arr.length > 0);
+        
+        if(!hasPlayers) {
             out.innerHTML = `<div class="empty-msg">NO RANKED PLAYERS</div>`; return;
         }
+
         const grid = document.createElement('div'); grid.style.display="flex"; grid.style.gap="15px"; grid.style.flexWrap="wrap"; grid.style.justifyContent="center";
         ["T1","T2","T3","T4","T5"].forEach(lvl => {
             let col = `<div style="min-width:180px;"><div class="tier-header">${lvl}</div>`;
-            let has = false;
+            let hasLvl = false;
             for(let t in kitData) {
                 if(t.includes(lvl)) {
                     kitData[t].forEach(name => {
-                        has = true;
+                        hasLvl = true;
                         col += `<div class="tier-card clickable" onclick="openProfile('${name}')" style="text-align:center; margin-bottom:10px;">
                             <div style="font-weight:bold;">${name}</div>${getTags(name, true)}
                             <div style="font-size:0.65rem; color:var(--gold); margin-top:4px;">${t}</div>
@@ -168,7 +180,7 @@ function render(kit) {
                     });
                 }
             }
-            if(has) { col += `</div>`; grid.innerHTML += col; }
+            if(hasLvl) { col += `</div>`; grid.innerHTML += col; }
         });
         out.appendChild(grid);
     }
@@ -182,10 +194,9 @@ function openProfile(name) {
     document.getElementById('pMeta').innerHTML = getTags(name, true);
     document.getElementById('pPoints').innerText = DATA.Overall[name] + " PTS";
     let grid = "";
-    for(let k in DATA.Rankings) {
-        if(k === "Overall") continue;
-        for(let t in DATA.Rankings[k]) {
-            if(DATA.Rankings[k][t].includes(name)) {
+    for(let k in DATA.Kits) {
+        for(let t in DATA.Kits[k]) {
+            if(DATA.Kits[k][t].includes(name)) {
                 const ct = t.startsWith('R') ? t.substring(1) : t;
                 grid += `<div class="p-kit-item">
                     <div class="kit-popup"><span class="popup-kit-name">${k}</span><span class="popup-tier-name">${ct}</span></div>
