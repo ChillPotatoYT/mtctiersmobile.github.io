@@ -4,35 +4,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MTC TIERS</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mtctiers/mtctiers.github.io@main/css.css?v=135">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mtctiers/mtctiers.github.io@main/css.css?v=130">
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/mtctiers/mtctiers.github.io/refs/heads/main/assets/backgroundsword.png">
 
     <style>
-        .player-row-content { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
-        .tag-group { display: flex; gap: 6px; width: 100%; pointer-events: auto; }
-        .modal-content { max-width: 380px !important; padding: 20px !important; border: 2px solid var(--purple) !important; }
-        .p-kit-circle { width: 50px; height: 50px; border: 2px solid var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent !important; margin-bottom: 5px; }
-        .p-kit-circle img { width: 30px; }
-        .p-kit-item { position: relative; display: inline-flex; flex-direction: column; align-items: center; width: 75px; margin-top: 15px; }
-        
-        /* HOVER POPUP */
-        .kit-popup {
-            position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%) translateY(5px);
-            background: #000; border: 1px solid var(--gold); padding: 6px 10px; border-radius: 4px;
-            text-align: center; opacity: 0; visibility: hidden; transition: 0.15s ease-out;
-            box-shadow: 0 0 12px rgba(255, 215, 0, 0.4); z-index: 99; white-space: nowrap;
+        /* --- LIST ALIGNMENT --- */
+        .player-row-content {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px;
         }
-        .p-kit-item:hover .kit-popup { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+        .tag-group {
+            display: flex;
+            gap: 6px;
+            width: 100%;
+            pointer-events: auto; /* Ensures hover works on tags */
+        }
+
+        /* --- MODAL BOX REFINEMENT --- */
+        .modal-content {
+            max-width: 380px !important;
+            padding: 20px !important;
+            border: 2px solid var(--purple) !important;
+        }
+
+        /* --- TRANSPARENT KIT CIRCLES --- */
+        .p-kit-circle {
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent !important; /* Made transparent */
+            margin-bottom: 5px;
+        }
+        .p-kit-circle img { width: 30px; }
+
+        /* --- HOVER POPUP (GOLD/GRAY + GLOW) --- */
+        .p-kit-item {
+            position: relative;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            width: 75px;
+            margin-top: 15px;
+        }
+
+        .kit-popup {
+            position: absolute;
+            bottom: 110%;
+            left: 50%;
+            transform: translateX(-50%) translateY(5px);
+            background: #000;
+            border: 1px solid var(--gold);
+            padding: 6px 10px;
+            border-radius: 4px;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.15s ease-out;
+            box-shadow: 0 0 12px rgba(255, 215, 0, 0.4); /* Gold Glow */
+            z-index: 99;
+            white-space: nowrap;
+        }
+
+        .p-kit-item:hover .kit-popup {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
         .popup-kit-name { color: #888888; font-size: 0.6rem; display: block; text-transform: uppercase; }
         .popup-tier-name { color: var(--gold); font-size: 0.85rem; font-weight: bold; display: block; }
+
         .tier-label-under { font-size: 0.7rem; color: var(--gold); font-family: 'MultiCraftFont'; }
 
-        /* TAG HOVER */
-        .tag { position: relative; cursor: help; }
+        /* --- TAG HOVER FIX --- */
+        .tag { position: relative; }
         .tag:hover::after {
-            content: attr(title); position: absolute; bottom: 125%; left: 50%; transform: translateX(-50%);
-            background: #111; color: #fff; padding: 5px 8px; font-size: 0.65rem; border-radius: 4px;
-            white-space: nowrap; border: 1px solid var(--gold); z-index: 100;
+            content: attr(title);
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #000;
+            color: #fff;
+            padding: 4px 8px;
+            font-size: 0.6rem;
+            border-radius: 4px;
+            white-space: nowrap;
+            border: 1px solid #444;
+            z-index: 100;
         }
     </style>
 </head>
@@ -70,55 +135,52 @@
 const ASSETS = "https://raw.githubusercontent.com/mtctiers/mtctiers.github.io/refs/heads/main/assets/";
 const DATA_PATH = "https://raw.githubusercontent.com/mtctiers/mtctiers.github.io/refs/heads/main/data/";
 const KIT_MAP = { "Overall": "", "Emerald": "emerald.png", "Emerald KB": "emerald_kb.png", "Emerald OA": "emerald_oa.png", "Dragonhide KB": "dragonhide_kb.png", "Dragonhide KB OA": "kb_oa.png", "Wand": "wand.png", "Diamond": "diamond.png" };
-const REGIONS = { "NA": "North America", "SA": "South America", "EU": "Europe", "OC": "Oceania", "AF": "Africa", "AS": "Asia"};
+
+const REGIONS = { "NA": "North America", "EU": "Europe", "RS": "Russia", "OC": "Oceania", "AF": "Africa", "SA": "South America" };
 const DEVICES = { "MK": "Mouse & Keyboard", "TP": "Touchpad", "MB": "Mobile" };
 
-let DATA = { Rankings: {}, HOF: [], Testers: [], Players: [] };
+let DATA = {};
 let CURRENT_TAB = 'rankings';
 let CURRENT_KIT = 'Overall';
 
-async function fetchFile(name) {
-    try {
-        const r = await fetch(`${DATA_PATH}${name}.json?v=${Date.now()}`);
-        if (!r.ok) return null;
-        return await r.json();
-    } catch(e) { return null; }
+function getTags(name, centered = false) {
+    const p = DATA.Players?.find(x => x.name === name) || {region:"NA", device:"MK"};
+    const regFull = REGIONS[p.region] || p.region;
+    const devFull = DEVICES[p.device] || p.device;
+    return `<div class="tag-group" style="${centered ? 'justify-content:center;' : 'justify-content:flex-start;'}">
+        <span class="tag reg-${p.region.toLowerCase()}" title="${regFull}">${p.region}</span>
+        <span class="tag dev-${p.device.toLowerCase()}" title="${devFull}">${p.device}</span>
+    </div>`;
 }
 
 async function load() {
-    const [rank, player, hof, testers] = await Promise.all([
-        fetchFile('rankings'), fetchFile('players'), fetchFile('hof'), fetchFile('testers')
-    ]);
-    if(rank) DATA.Rankings = rank;
-    if(player) DATA.Players = player;
-    if(hof) DATA.HOF = hof;
-    if(testers) DATA.Testers = testers;
-
-    calculateOverall();
-    buildKitBar();
-    render("Overall");
+    try {
+        const [rankR, playerR] = await Promise.all([
+            fetch(`${DATA_PATH}rankings.json?v=${Date.now()}`),
+            fetch(`${DATA_PATH}players.json?v=${Date.now()}`).catch(() => null)
+        ]);
+        DATA = await rankR.json();
+        if(playerR) DATA.Players = await playerR.json();
+        
+        calculateOverall();
+        buildKitBar();
+        render("Overall");
+    } catch(e) { console.error("Load failed", e); }
 }
 
 function calculateOverall() {
     let totals = {};
     const PTS = { "HT1":50, "LT1":40, "HT2":30, "LT2":20, "HT3":12, "LT3":8, "HT4":5, "LT4":3, "HT5":2, "LT5":1 };
-    for(let k in DATA.Rankings) {
-        for(let t in DATA.Rankings[k]) {
-            DATA.Rankings[k][t].forEach(p => {
+    for(let k in DATA) {
+        if(k === "Overall" || k === "Players") continue;
+        for(let t in DATA[k]) {
+            DATA[k][t].forEach(p => {
                 const cleanT = t.replace('R','');
                 totals[p] = (totals[p]||0) + (PTS[cleanT]||0);
             });
         }
     }
-    DATA.Overall = totals;
-}
-
-function getTags(name, centered = false) {
-    const p = DATA.Players?.find(x => x.name === name) || {region:"NA", device:"MK"};
-    return `<div class="tag-group" style="${centered ? 'justify-content:center;' : 'justify-content:flex-start;'}">
-        <span class="tag reg-${p.region.toLowerCase()}" title="${REGIONS[p.region] || p.region}">${p.region}</span>
-        <span class="tag dev-${p.device.toLowerCase()}" title="${DEVICES[p.device] || p.device}">${p.device}</span>
-    </div>`;
+    DATA["Overall"] = totals;
 }
 
 function buildKitBar() {
@@ -127,10 +189,12 @@ function buildKitBar() {
         const btn = document.createElement('button');
         btn.className = `kit-btn ${k==='Overall'?'active':''}`;
         btn.innerHTML = (KIT_MAP[k] ? `<img src="${ASSETS}${KIT_MAP[k]}" style="width:16px; margin-right:5px;"> ` : "") + k.toUpperCase();
-        btn.onclick = () => { if(CURRENT_TAB === 'rankings') { 
-            document.querySelectorAll('.kit-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active'); CURRENT_KIT = k; render(k); 
-        }};
+        btn.onclick = () => { 
+            if(CURRENT_TAB === 'rankings') {
+                document.querySelectorAll('.kit-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active'); CURRENT_KIT = k; render(k); 
+            }
+        };
         bar.appendChild(btn);
     });
 }
@@ -138,12 +202,17 @@ function buildKitBar() {
 function render(kit) {
     const out = document.getElementById('displayList'); out.innerHTML = "";
     document.getElementById('viewLabel').innerText = kit.toUpperCase();
+    
     if(kit === "Overall") {
         Object.entries(DATA.Overall).sort((a,b)=>b[1]-a[1]).forEach(([name, pts], i) => {
-            out.innerHTML += `<div class="tier-card clickable" onclick="openProfile('${name}')">
+            out.innerHTML += `
+            <div class="tier-card clickable" onclick="openProfile('${name}')">
                 <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
                     <div class="player-row-content">
-                        <div style="display:flex; align-items:center; gap:8px;"><b style="color:var(--purple); font-size:0.75rem;">#${i+1}</b><span style="font-weight:bold; font-size:1.1rem;">${name}</span></div>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <b style="color:var(--purple); font-size:0.75rem;">#${i+1}</b>
+                            <span style="font-weight:bold; font-size:1.1rem;">${name}</span>
+                        </div>
                         ${getTags(name)}
                     </div>
                     <b style="color:var(--gold); font-size:1.1rem;">${pts} PTS</b>
@@ -151,42 +220,60 @@ function render(kit) {
             </div>`;
         });
     } else {
-        const grid = document.createElement('div'); grid.className = "kit-grid";
-        grid.style.display="flex"; grid.style.gap="15px"; grid.style.flexWrap="wrap"; grid.style.justifyContent="center";
-        ["T1","T2","T3","T4","T5"].forEach(lvl => {
-            let col = `<div style="min-width:180px;"><div class="tier-header">${lvl}</div>`;
-            let has = false;
-            for(let t in DATA.Rankings[kit]) {
-                if(t.includes(lvl)) {
-                    DATA.Rankings[kit][t].forEach(name => {
-                        has = true;
-                        col += `<div class="tier-card clickable" style="margin-bottom:10px; text-align:center;" onclick="openProfile('${name}')">
-                            <div style="font-weight:bold; margin-bottom:4px;">${name}</div>
-                            ${getTags(name, true)}
-                            <div style="font-size:0.65rem; color:var(--gold); margin-top:4px; font-weight:bold;">${t}</div>
-                        </div>`;
-                    });
-                }
-            }
-            if(has) { col += `</div>`; grid.innerHTML += col; }
-        });
-        out.appendChild(grid);
+        renderKitGrid(kit);
     }
 }
 
+function renderKitGrid(kit) {
+    const out = document.getElementById('displayList');
+    const grid = document.createElement('div');
+    grid.style.display="flex"; grid.style.gap="15px"; grid.style.flexWrap="wrap"; grid.style.justifyContent="center";
+    
+    ["T1","T2","T3","T4","T5"].forEach(lvl => {
+        let col = `<div style="min-width:180px;"><div class="tier-header">${lvl}</div>`;
+        let has = false;
+        for(let t in DATA[kit]) {
+            if(t.includes(lvl)) {
+                DATA[kit][t].forEach(name => {
+                    has = true;
+                    col += `<div class="tier-card clickable" style="margin-bottom:10px; text-align:center;" onclick="openProfile('${name}')">
+                        <div style="font-weight:bold; margin-bottom:4px;">${name}</div>
+                        ${getTags(name, true)}
+                        <div style="font-size:0.65rem; color:var(--gold); margin-top:4px; font-weight:bold;">${t}</div>
+                    </div>`;
+                });
+            }
+        }
+        if(has) { col += `</div>`; grid.appendChild(Object.assign(document.createElement('div'), {innerHTML: col})); }
+    });
+    out.appendChild(grid);
+}
+
 function openProfile(name) {
+    if(!DATA.Overall?.[name]) return;
     const sorted = Object.entries(DATA.Overall).sort((a,b)=>b[1]-a[1]);
     const rankIdx = sorted.findIndex(x => x[0] === name);
+    
     document.getElementById('pRank').innerText = "RANK #" + (rankIdx + 1);
     document.getElementById('pName').innerText = name;
     document.getElementById('pMeta').innerHTML = getTags(name, true);
-    document.getElementById('pPoints').innerText = (DATA.Overall[name] || 0) + " PTS";
+    document.getElementById('pPoints').innerText = DATA.Overall[name] + " PTS";
+    
     let grid = "";
-    for(let k in DATA.Rankings) {
-        for(let t in DATA.Rankings[k]) {
-            if(DATA.Rankings[k][t].includes(name)) {
-                const ct = t.startsWith('R') ? t.substring(1) : t;
-                grid += `<div class="p-kit-item"><div class="kit-popup"><span class="popup-kit-name">${k}</span><span class="popup-tier-name">${ct}</span></div><div class="p-kit-circle"><img src="${ASSETS}${KIT_MAP[k]}"></div><div class="tier-label-under">${ct}</div></div>`;
+    for(let k in DATA) {
+        if(k === "Overall" || k === "Players") continue;
+        for(let t in DATA[k]) {
+            if(DATA[k][t].includes(name)) {
+                const cleanTier = t.startsWith('R') ? t.substring(1) : t;
+                grid += `
+                <div class="p-kit-item">
+                    <div class="kit-popup">
+                        <span class="popup-kit-name">${k}</span>
+                        <span class="popup-tier-name">${cleanTier}</span>
+                    </div>
+                    <div class="p-kit-circle"><img src="${ASSETS}${KIT_MAP[k]}"></div>
+                    <div class="tier-label-under">${cleanTier}</div>
+                </div>`;
             }
         }
     }
@@ -194,39 +281,33 @@ function openProfile(name) {
     document.getElementById('profileModal').style.display = 'flex';
 }
 
-function switchTab(tab) {
+function handleSearch(val) {
+    const pop = document.getElementById('searchPopup');
+    if(!val) { pop.style.display = 'none'; return; }
+    const matches = Object.keys(DATA.Overall || {}).filter(n => n.toLowerCase().includes(val.toLowerCase())).slice(0, 5);
+    pop.innerHTML = matches.map(m => `<div class="search-item" onclick="openProfile('${m}'); document.getElementById('searchPopup').style.display='none';"><b>${m}</b></div>`).join('');
+    pop.style.display = matches.length ? 'block' : 'none';
+}
+
+async function switchTab(tab) {
     CURRENT_TAB = tab;
     document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
     document.getElementById('nav-' + tab).classList.add('active');
     const out = document.getElementById('displayList');
     const label = document.getElementById('viewLabel');
     out.innerHTML = "";
+    
     if(tab === 'rankings') {
         document.getElementById('kitBar').style.display="flex";
         render(CURRENT_KIT);
     } else {
         document.getElementById('kitBar').style.display="none";
         label.innerText = tab === 'hof' ? "HALL OF FAME" : "TIER TESTERS";
-        const list = tab === 'hof' ? DATA.HOF : DATA.Testers;
-        if(!list || list.length === 0) {
-            out.innerHTML = `<div style="color:var(--gold); font-family:'MultiCraftFont'; margin-top:50px; text-align:center;">NO DATA FOUND</div>`;
-        } else {
-            list.forEach(p => {
-                out.innerHTML += `<div class="tier-card"><div style="display:flex; justify-content:space-between; align-items:center; width:100%;"><b>${p.name || p}</b> ${getTags(p.name || p)}</div></div>`;
-            });
-        }
+        out.innerHTML = `<div style="color:var(--gold); font-family:'MultiCraftFont'; margin-top:50px; text-align:center;">NO DATA FOUND</div>`;
     }
 }
 
-function handleSearch(val) {
-    const pop = document.getElementById('searchPopup');
-    if(!val) { pop.style.display = 'none'; return; }
-    const matches = Object.keys(DATA.Overall || {}).filter(n => n.toLowerCase().includes(val.toLowerCase())).slice(0, 5);
-    pop.innerHTML = matches.map(m => `<div class="search-item" onclick="openProfile('${m}'); pop.style.display='none';"><b>${m}</b></div>`).join('');
-    pop.style.display = matches.length ? 'block' : 'none';
-}
-
-window.onload = load;
+load();
 </script>
 </body>
 </html>
